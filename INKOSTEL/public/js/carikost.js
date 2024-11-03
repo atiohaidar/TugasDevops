@@ -126,3 +126,29 @@ function bookmarkKost(button) {
 
 
 
+if ("geolocation" in navigator){
+    navigator.geolocation.getCurrentPosition(function(position){
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + latitude + '&lon=' + longitude)
+      .then(response => response.json())
+      .then(data => {
+const locationName = `${data.address.city || data.address.town || "Lokasi tidak dikenal"}, ${data.address.state}`;
+        document.getElementById('location').textContent = locationName;
+        document.getElementById('location').setAttribute('href', `https://www.google.com/maps?q=${latitude},${longitude}`);
+
+
+      }).catch(error => {
+        console.error('Error:', error);
+        document.getElementById('location').textContent = 'Lokasi tidak dikenal';
+
+      })
+      
+       ;
+
+    }, (error) => {
+      document.getElementById('location').textContent = 'Izin lokasi ditolak';
+      console.error('Error:', error);
+    }
+  );
+}
